@@ -1,0 +1,1 @@
+include ':app', ':libcore-ui-release', ':libcore-release'
