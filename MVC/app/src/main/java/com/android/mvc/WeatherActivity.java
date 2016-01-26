@@ -14,8 +14,7 @@ import com.android.libcore_ui.dialog.LoadingDialog;
  * @author zzp(zhao_zepeng@hotmail.com)
  * @since 2016-01-25
  */
-public class WeatherActivity extends BaseActivity{
-
+public class WeatherActivity extends BaseActivity implements OnLoadWeatherCallback{
     private TextView tv_name;
     private TextView tv_temperature;
     private TextView tv_wind_d;
@@ -40,19 +39,7 @@ public class WeatherActivity extends BaseActivity{
         ld = new LoadingDialog(this);
         ld.setLoadingText("正在获取天气...");
         ld.show();
-        weatherModel.getWeather(new OnLoadWeatherCallback() {
-            @Override
-            public void onLoadSuccess(WeatherInfo info) {
-                ld.dismiss();
-                onShowWeather(info);
-            }
-
-            @Override
-            public void onError(NetError error) {
-                ld.dismiss();
-                T.getInstance().showShort(error.errorCode +" "+ error.errorMessage);
-            }
-        });
+        weatherModel.getWeather(this);
     }
 
     private void onShowWeather(WeatherInfo weatherInfo){
@@ -61,5 +48,17 @@ public class WeatherActivity extends BaseActivity{
         tv_wind_d.setText(weatherInfo.WD);
         tv_wind_s.setText(weatherInfo.WS);
         tv_time.setText(weatherInfo.time);
+    }
+
+    @Override
+    public void onLoadSuccess(WeatherInfo info) {
+        ld.dismiss();
+        onShowWeather(info);
+    }
+
+    @Override
+    public void onError(NetError error) {
+        ld.dismiss();
+        T.getInstance().showShort(error.errorCode +" "+ error.errorMessage);
     }
 }
